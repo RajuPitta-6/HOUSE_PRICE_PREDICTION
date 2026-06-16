@@ -1,6 +1,5 @@
 import pandas as pd
 from pathlib import Path
-from config.config import RAW_DATA_PATH
 
 class LoadData:
     def load(self,path:Path):
@@ -17,4 +16,3 @@ class LoadData:
             return df
         except Exception as e:
             raise ValueError (f"Error : {e}")
-        
