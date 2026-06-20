@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Estimate house prices using property details across major Indian cities." />
+  <title>House Price Prediction</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">🏠</span>
+        <div>
+          <h1>House Price Prediction</h1>
+          <p class="subtitle">Enter property details to estimate the house price.</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main-content">
+    <form id="prediction-form" class="prediction-form" novalidate>
+      <div class="form-grid">
+        <div class="field-card">
+          <label for="city">City</label>
+          <select id="city" name="city" required>
+            <option value="" disabled selected>Select a city</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Nagpur">Nagpur</option>
+          </select>
+          <p class="helper-text">Example: Mumbai, Bangalore, or Pune</p>
+          <p class="error-text" data-error-for="city"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="locality-tier">Locality Tier</label>
+          <select id="locality-tier" name="locality-tier" required>
+            <option value="" disabled selected>Select locality tier</option>
+            <option value="Premium">Premium</option>
+            <option value="Mid">Mid</option>
+            <option value="Budget">Budget</option>
+          </select>
+          <p class="helper-text">Example: Premium for upscale neighborhoods, Budget for affordable areas</p>
+          <p class="error-text" data-error-for="locality-tier"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="bhk">BHK</label>
+          <input type="number" id="bhk" name="bhk" min="1" max="10" step="1" placeholder="Example: 3" required />
+          <p class="helper-text">Number of bedrooms, hall, and kitchen combined</p>
+          <p class="error-text" data-error-for="bhk"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="bathrooms">Bathrooms</label>
+          <input type="number" id="bathrooms" name="bathrooms" min="1" max="10" step="1" placeholder="Example: 4" required />
+          <p class="helper-text">Total number of bathrooms in the property</p>
+          <p class="error-text" data-error-for="bathrooms"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="super-area">Super Area (sqft)</label>
+          <input type="number" id="super-area" name="super-area" min="100" step="0.1" placeholder="Example: 957.3" required />
+          <p class="helper-text">Total carpet plus common area in square feet</p>
+          <p class="error-text" data-error-for="super-area"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="property-age">Property Age (years)</label>
+          <input type="number" id="property-age" name="property-age" min="0" max="100" step="1" placeholder="Example: 8" required />
+          <p class="helper-text">How old the property is since construction</p>
+          <p class="error-text" data-error-for="property-age"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="parking">Parking</label>
+          <select id="parking" name="parking" required>
+            <option value="" disabled selected>Select parking availability</option>
+            <option value="1">Yes</option>
+            <option value="0">No</option>
+          </select>
+          <p class="helper-text">Whether dedicated parking is included with the property</p>
+          <p class="error-text" data-error-for="parking"></p>
+        </div>
+
+        <div class="field-card">
+          <label for="furnishing">Furnishing</label>
+          <select id="furnishing" name="furnishing" required>
+            <option value="" disabled selected>Select furnishing type</option>
+            <option value="Fully-Furnished">Fully-Furnished</option>
+            <option value="Semi-Furnished">Semi-Furnished</option>
+            <option value="Unfurnished">Unfurnished</option>
+          </select>
+          <p class="helper-text">Example: Fully-Furnished, Semi-Furnished, or Unfurnished</p>
+          <p class="error-text" data-error-for="furnishing"></p>
+        </div>
+
+        <div class="field-card field-card--full">
+          <label for="distance">Distance to City Center (km)</label>
+          <input type="number" id="distance" name="distance" min="0" step="0.01" placeholder="Example: 20.76" required />
+          <p class="helper-text">Approximate distance from the property to the city center</p>
+          <p class="error-text" data-error-for="distance"></p>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" id="predict-btn" class="predict-btn">
+          <span class="btn-label">Predict Price</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+    </form>
+
+    <section id="result-section" class="result-section hidden" aria-live="polite">
+      <div class="result-card">
+        <div class="result-header">
+          <span class="result-badge">Estimated Value</span>
+          <h2>Your Predicted Price</h2>
+        </div>
+        <p id="result-price" class="result-price"></p>
+        <p class="result-note">Based on the property details you provided. Actual market prices may vary.</p>
+      </div>
+    </section>
+
+    <section id="error-section" class="error-section hidden" aria-live="assertive">
+      <div class="error-banner">
+        <p id="error-message"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>House Price Prediction &mdash; Real estate insights powered by machine learning</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
