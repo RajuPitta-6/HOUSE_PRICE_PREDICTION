@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/predict";
+const API_URL = "https://house-price-prediction-raz.onrender.com";
 
 const form = document.getElementById("prediction-form");
 const predictBtn = document.getElementById("predict-btn");
